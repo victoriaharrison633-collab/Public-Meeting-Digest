@@ -46,3 +46,10 @@ export const DISCLAIMER =
 export const UNCERTAIN_BADGE = "Uncertain — verify against official record.";
 export const IMPACT_LABEL = "What this may mean for residents";
 export const NO_VOTE_TEXT = "No vote recorded in source";
+
+/** Claude Opus 5 list rates, used only to log spend per call (Rule 15). */
+export const COST_PER_MTOK_IN = 5;
+export const COST_PER_MTOK_OUT = 25;
+
+/** In-memory response cache: the same document is never billed twice on a warm instance. */
+export const CACHE_MAX_ENTRIES = 20;

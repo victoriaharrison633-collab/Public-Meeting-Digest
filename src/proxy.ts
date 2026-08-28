@@ -1,21 +1,24 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Security headers, then a CSRF Origin check on state-changing methods.
+ * Runs before every route. Order: CSRF Origin check, then security headers.
+ *
+ * Next 16 renamed `middleware.ts` to `proxy.ts`, and with a `src/` directory the
+ * file must sit beside `app/` — i.e. here. A misplaced file does not warn; it
+ * simply never runs, which for a CSRF control means the check silently disappears.
  *
  * There is no auth step. This app has no accounts; adding one here would be a defect.
  */
 
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   if (MUTATING.has(req.method)) {
     const origin = req.headers.get("origin");
-    const expected = process.env.NEXT_PUBLIC_APP_URL;
+    const expected = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
 
-    // Reject missing Origin as well as mismatched — a missing header is the
-    // cheapest CSRF bypass there is.
-    if (!origin || !expected || origin !== expected.replace(/\/$/, "")) {
+    // A missing Origin is rejected too — it is the cheapest CSRF bypass there is.
+    if (!origin || !expected || origin !== expected) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
     }
   }

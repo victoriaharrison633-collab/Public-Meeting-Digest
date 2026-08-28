@@ -33,8 +33,19 @@ if (!parsed.success) {
 
 export const env = parsed.data;
 
-// Rule 16: refuse to boot in production with development config.
-if (env.NODE_ENV === "production" && env.NEXT_PUBLIC_APP_URL.includes("localhost")) {
+// Rule 16: refuse to BOOT in production with development config.
+//
+// Skipped during `next build`, which runs with NODE_ENV=production while still
+// reading .env.local — a local production build against localhost is legitimate.
+// The guard that matters is the one on the deployed server, and this still fires
+// there.
+const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+
+if (
+  !isBuildPhase &&
+  env.NODE_ENV === "production" &&
+  env.NEXT_PUBLIC_APP_URL.includes("localhost")
+) {
   throw new Error(
     "NEXT_PUBLIC_APP_URL points at localhost while NODE_ENV=production. " +
       "The CSRF Origin check would reject every request. Set it to the deployed origin.",

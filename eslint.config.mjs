@@ -21,10 +21,10 @@ const config = [
     },
   },
   {
-    // The sanctioned readers: env.ts itself; middleware.ts, which runs in the edge
+    // The sanctioned readers: env.ts itself; src/proxy.ts, which runs in the edge
     // runtime; and next.config.ts, which is evaluated at build time. None of the
     // three can import a `server-only` module.
-    files: ["src/lib/env.ts", "middleware.ts", "next.config.ts"],
+    files: ["src/lib/env.ts", "src/proxy.ts", "next.config.ts"],
     rules: { "no-restricted-properties": "off" },
   },
 ];
