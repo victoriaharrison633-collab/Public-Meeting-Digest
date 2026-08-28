@@ -1,7 +1,14 @@
+"use client";
+
+import { UploadZone } from "@/components/UploadZone";
+import { useDocuments } from "@/hooks/useDocuments";
 import { DISCLAIMER } from "@/lib/constants";
 
-// Prompt 3 replaces the upload region and Prompt 5 the results region.
 export default function Home() {
+  const { docs, notice, atCapacity, addFiles, retry, remove } = useDocuments();
+
+  const extracted = docs.filter((d) => d.pages.length > 0);
+
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
       <header className="border-b border-[--color-line] pb-6">
@@ -18,13 +25,35 @@ export default function Home() {
       </header>
 
       <section className="mt-8">
-        <div className="rounded border border-dashed border-[--color-line] p-10 text-center">
-          <h2 className="font-medium">No documents yet</h2>
-          <p className="measure mx-auto mt-1 text-sm text-[--color-muted]">
-            Upload arrives in Prompt 3. Up to 5 text-layer PDFs at once; nothing is
-            uploaded or stored.
-          </p>
-        </div>
+        <UploadZone
+          docs={docs}
+          notice={notice}
+          atCapacity={atCapacity}
+          onAdd={addFiles}
+          onRetry={retry}
+          onRemove={remove}
+        />
+      </section>
+
+      <section className="mt-8">
+        {extracted.length === 0 ? (
+          <div className="rounded border border-dashed border-[--color-line] p-10 text-center">
+            <h2 className="font-medium">No documents yet</h2>
+            <p className="measure mx-auto mt-1 text-sm text-[--color-muted]">
+              Add up to 5 text-layer PDFs above. Nothing is uploaded or stored.
+            </p>
+          </div>
+        ) : (
+          <div className="rounded border border-[--color-line] p-6">
+            <h2 className="font-medium">
+              {extracted.length} document{extracted.length === 1 ? "" : "s"} ready
+            </h2>
+            <p className="measure mt-1 text-sm text-[--color-muted]">
+              Digest generation is wired in Prompt 4. Extracted page counts are
+              shown above.
+            </p>
+          </div>
+        )}
       </section>
     </main>
   );
