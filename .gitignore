@@ -156,3 +156,4 @@ public/pdf.worker.min.mjs
 # Test artifacts
 playwright-report/
 test-results/
+.env*
