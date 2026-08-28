@@ -71,7 +71,7 @@ security-utility phases; keep it lean, no feature code.
 
 1. `package.json` — exact pinned versions, no caret: next 16.3.3, react 19.2.8,
    react-dom 19.2.8, typescript 5.9.3, @anthropic-ai/sdk 0.122.0, pdfjs-dist 6.2.108,
-   zod 4.4.3, tailwindcss 4.3.3, eslint 10.9.1. Scripts: dev, build, start, lint,
+   zod 4.4.3, tailwindcss 4.3.3, eslint 9.39.5. Scripts: dev, build, start, lint,
    typecheck, and check:all running lint + typecheck. Add a postinstall that copies the
    pdf.js worker from node_modules/pdfjs-dist/build/ into public/ so the worker version
    can never drift from the library.

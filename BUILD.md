@@ -26,7 +26,7 @@ check · download that table as `.md` or `.csv`.
 `19.2.8` · TypeScript `5.9.3` · `@anthropic-ai/sdk` `0.122.0` · `pdfjs-dist` `6.2.108`
 · `zod` `4.4.3` · `tailwindcss` `4.3.3` · `@upstash/ratelimit` `2.0.8` ·
 `@upstash/redis` `1.38.3` · `@sentry/nextjs` `10.72.0` · `vitest` `4.1.11` ·
-`@playwright/test` `1.62.1` · `eslint` `10.9.1` · Vercel, Node runtime.
+`@playwright/test` `1.62.1` · `eslint` `9.39.5` · Vercel, Node runtime.
 
 **Account types:** none. No auth, no users, no sessions, no admin.
 
@@ -134,7 +134,7 @@ routes beyond what is listed.
 1. `package.json` — Next.js 16.3.3, React 19.2.8, react-dom 19.2.8, typescript 5.9.3,
    @anthropic-ai/sdk 0.122.0, pdfjs-dist 6.2.108, zod 4.4.3, tailwindcss 4.3.3,
    @upstash/ratelimit 2.0.8, @upstash/redis 1.38.3, @sentry/nextjs 10.72.0, vitest
-   4.1.11, @playwright/test 1.62.1, eslint 10.9.1. Exact versions, no caret ranges.
+   4.1.11, @playwright/test 1.62.1, eslint 9.39.5. Exact versions, no caret ranges.
    Scripts: dev, build, start, lint, typecheck, test, test:e2e, env:validate,
    check:secrets, and check:all running lint + typecheck + check:secrets + test.
 

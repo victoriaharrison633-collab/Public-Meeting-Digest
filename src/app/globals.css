@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind 4 CSS-first config. The three semantic colors below are the ONLY place
+ * the source-check palette is defined; components reference the token, never a hex.
+ */
+@theme {
+  --color-ink: oklch(0.22 0.01 250);
+  --color-muted: oklch(0.52 0.01 250);
+  --color-line: oklch(0.9 0.005 250);
+  --color-paper: oklch(0.99 0.002 250);
+  --color-accent: oklch(0.5 0.13 250);
+
+  /* Source check — green / amber / red. Never the only signal; a label always accompanies. */
+  --color-verified: oklch(0.55 0.13 150);
+  --color-verified-bg: oklch(0.96 0.03 150);
+  --color-near: oklch(0.6 0.13 75);
+  --color-near-bg: oklch(0.96 0.04 85);
+  --color-notfound: oklch(0.55 0.18 25);
+  --color-notfound-bg: oklch(0.96 0.03 25);
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reading-optimised measure for digest prose. */
+.measure {
+  max-width: 70ch;
+}

@@ -106,7 +106,7 @@ affects one document rather than all five.
 | `@sentry/nextjs` | `10.72.0` | Inert with a placeholder DSN; required so error detail has somewhere to go that isn't the browser. |
 | `vitest` | `4.1.11` | |
 | `@playwright/test` | `1.62.1` | |
-| `eslint` | `10.9.1` | |
+| `eslint` | `9.39.5` | |
 | Hosting | Vercel | Node runtime (not Edge — the SDK and streaming need Node). |
 
 **Why Upstash, in an app with no database.** `/api/digest` is an unauthenticated
