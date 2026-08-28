@@ -13,11 +13,11 @@ const STATUS_LABEL: Record<SessionDoc["status"], string> = {
 };
 
 const STATUS_CLASS: Record<SessionDoc["status"], string> = {
-  queued: "bg-[--color-verified-bg] text-[--color-verified]",
+  queued: "bg-verified-bg text-verified",
   extracting: "bg-neutral-100 text-neutral-600",
-  processing: "bg-[--color-near-bg] text-[--color-near]",
-  done: "bg-[--color-verified-bg] text-[--color-verified]",
-  error: "bg-[--color-notfound-bg] text-[--color-notfound]",
+  processing: "bg-near-bg text-near",
+  done: "bg-verified-bg text-verified",
+  error: "bg-notfound-bg text-notfound",
 };
 
 interface Props {
@@ -58,10 +58,10 @@ export function UploadZone({
         onDrop={handleDrop}
         className={`rounded border-2 border-dashed p-8 text-center transition-colors ${
           atCapacity
-            ? "border-[--color-line] bg-neutral-50 opacity-60"
+            ? "border-line bg-neutral-50 opacity-60"
             : dragging
-              ? "border-[--color-accent] bg-blue-50/40"
-              : "border-[--color-line]"
+              ? "border-accent bg-blue-50/40"
+              : "border-line"
         }`}
       >
         <p className="font-medium">
@@ -69,7 +69,7 @@ export function UploadZone({
             ? `${MAX_DOCUMENTS} documents added — that's the limit`
             : "Drop meeting-minutes PDFs here"}
         </p>
-        <p className="mt-1 text-sm text-[--color-muted]">
+        <p className="mt-1 text-sm text-muted">
           Up to {MAX_DOCUMENTS} text-layer PDFs. They are read in your browser and
           never uploaded.
         </p>
@@ -77,7 +77,7 @@ export function UploadZone({
           type="button"
           disabled={atCapacity}
           onClick={() => input.current?.click()}
-          className="mt-4 rounded border border-[--color-line] bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-4 rounded border border-line bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Choose files
         </button>
@@ -97,19 +97,19 @@ export function UploadZone({
       {notice && (
         <p
           role="status"
-          className="mt-3 rounded border border-[--color-notfound] bg-[--color-notfound-bg] px-3 py-2 text-sm text-[--color-notfound]"
+          className="mt-3 rounded border border-notfound bg-notfound-bg px-3 py-2 text-sm text-notfound"
         >
           {notice}
         </p>
       )}
 
       {docs.length > 0 && (
-        <ul className="mt-4 divide-y divide-[--color-line] rounded border border-[--color-line]">
+        <ul className="mt-4 divide-y divide-line rounded border border-line">
           {docs.map((doc) => (
             <li key={doc.id} className="flex items-center gap-3 px-3 py-2">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{doc.filename}</p>
-                <p className="text-xs text-[--color-muted]">
+                <p className="text-xs text-muted">
                   {doc.pages.length > 0
                     ? `${doc.pages.length} page${doc.pages.length === 1 ? "" : "s"} extracted`
                     : doc.error
@@ -126,7 +126,7 @@ export function UploadZone({
                 <button
                   type="button"
                   onClick={() => onRetry(doc.id)}
-                  className="shrink-0 text-xs font-medium text-[--color-accent] underline"
+                  className="shrink-0 text-xs font-medium text-accent underline"
                 >
                   Retry
                 </button>
@@ -135,7 +135,7 @@ export function UploadZone({
                 type="button"
                 onClick={() => onRemove(doc.id)}
                 aria-label={`Remove ${doc.filename}`}
-                className="shrink-0 text-xs text-[--color-muted] hover:text-[--color-ink]"
+                className="shrink-0 text-xs text-muted hover:text-ink"
               >
                 Remove
               </button>

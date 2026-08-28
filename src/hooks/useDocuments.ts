@@ -46,17 +46,56 @@ export function useDocuments(): UseDocuments {
    */
   const files = useRef(new Map<string, File>());
 
-  // Extraction runs one document at a time. Five concurrent pdf.js workers jank
-  // the main thread badly enough to look like a crash during a demo.
-  const queue = useRef<Promise<void>>(Promise.resolve());
+  // Two separate queues. Extraction takes about a second and processing up to a
+  // minute; chaining them on one queue would make document 2 wait for document 1's
+  // model call before it could even be read.
+  const extractQueue = useRef<Promise<void>>(Promise.resolve());
+  const digestQueue = useRef<Promise<void>>(Promise.resolve());
 
   const update = useCallback((id: string, patch: Partial<SessionDoc>) => {
     setDocs((prev) => prev.map((d) => (d.id === id ? { ...d, ...patch } : d)));
   }, []);
 
+  /**
+   * One request per document, strictly sequential. Documents are unrelated
+   * meetings and never share a context; sequential requests also mean a rate-limit
+   * response affects one document rather than all five.
+   */
+  const runDigest = useCallback(
+    (id: string, filename: string, pages: SessionDoc["pages"]) => {
+      digestQueue.current = digestQueue.current.then(async () => {
+        update(id, { status: "processing", error: null });
+        try {
+          const res = await fetch("/api/digest", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ filename, pages }),
+          });
+          const json: unknown = await res.json();
+          if (!res.ok) {
+            const message =
+              typeof json === "object" && json !== null && "error" in json
+                ? String((json as { error: unknown }).error)
+                : "Something went wrong.";
+            update(id, { status: "error", error: message });
+            return;
+          }
+          update(id, { status: "done", result: json as SessionDoc["result"] });
+        } catch {
+          // One document failing must never discard another's results.
+          update(id, {
+            status: "error",
+            error: "Could not reach the server. Check your connection and retry.",
+          });
+        }
+      });
+    },
+    [update],
+  );
+
   const runExtraction = useCallback(
     (id: string, file: File) => {
-      queue.current = queue.current.then(async () => {
+      extractQueue.current = extractQueue.current.then(async () => {
         update(id, { status: "extracting", error: null });
         try {
           const pages = await extractPages(file);
@@ -69,6 +108,8 @@ export function useDocuments(): UseDocuments {
             return;
           }
           update(id, { status: "queued", pages, error: null });
+          // Hand straight to the digest queue; extraction can continue meanwhile.
+          runDigest(id, file.name, pages);
         } catch (err) {
           update(id, {
             status: "error",
@@ -80,7 +121,7 @@ export function useDocuments(): UseDocuments {
         }
       });
     },
-    [update],
+    [update, runDigest],
   );
 
   const addFiles = useCallback(
@@ -137,12 +178,22 @@ export function useDocuments(): UseDocuments {
     [runExtraction],
   );
 
+  /**
+   * Retries only the stage that failed: re-extract if we never got pages, re-run
+   * the model call if we did. Re-extracting a document whose text is already in
+   * hand would waste a second for no reason.
+   */
   const retry = useCallback(
     (id: string) => {
+      const doc = docsRef.current.find((d) => d.id === id);
+      if (doc && doc.pages.length > 0) {
+        runDigest(id, doc.filename, doc.pages);
+        return;
+      }
       const file = files.current.get(id);
       if (file) runExtraction(id, file);
     },
-    [runExtraction],
+    [runExtraction, runDigest],
   );
 
   const remove = useCallback((id: string) => {
