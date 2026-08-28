@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AuditTable } from "@/components/AuditTable";
 import { DigestCard } from "@/components/DigestCard";
 import type { SessionDoc } from "@/types/digest";
 
@@ -85,11 +86,21 @@ export function DocumentPanel({
               </p>
             </div>
           ) : (
-            <div className="mt-3 space-y-3">
-              {doc.result.items.map((item) => (
-                <DigestCard key={item.id} item={item} />
-              ))}
-            </div>
+            <>
+              <div className="mt-3 space-y-3">
+                {doc.result.items.map((item) => (
+                  <DigestCard key={item.id} item={item} />
+                ))}
+              </div>
+
+              <div className="mt-6 border-t border-line pt-4">
+                <AuditTable
+                  result={doc.result}
+                  pages={doc.pages}
+                  items={doc.result.items}
+                />
+              </div>
+            </>
           )}
         </div>
       )}
