@@ -40,14 +40,27 @@ export const env = parsed.data;
 // The guard that matters is the one on the deployed server, and this still fires
 // there.
 const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
-
-if (
+const isDeployed = Boolean(process.env.VERCEL);
+const localhostInProd =
   !isBuildPhase &&
   env.NODE_ENV === "production" &&
-  env.NEXT_PUBLIC_APP_URL.includes("localhost")
-) {
+  env.NEXT_PUBLIC_APP_URL.includes("localhost");
+
+if (localhostInProd && isDeployed) {
+  // The failure this prevents: deployed with a localhost origin, so the CSRF
+  // check rejects every request and the app looks completely broken while
+  // working perfectly on the developer's machine.
   throw new Error(
-    "NEXT_PUBLIC_APP_URL points at localhost while NODE_ENV=production. " +
+    "NEXT_PUBLIC_APP_URL points at localhost on a deployed instance. " +
       "The CSRF Origin check would reject every request. Set it to the deployed origin.",
+  );
+}
+
+if (localhostInProd && !isDeployed) {
+  // `npm run start` locally is a legitimate production smoke test, so warn
+  // rather than refuse to boot.
+  console.warn(
+    "[warn] Running a production build against a localhost NEXT_PUBLIC_APP_URL. " +
+      "Fine locally; this would be fatal if deployed.",
   );
 }
