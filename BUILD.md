@@ -322,8 +322,8 @@ Run npm run typecheck.
 - [ ] Parsing an item with `classification: "procedural"` and a non-null `impactNote` **fails**
 - [ ] Parsing a `sourceQuote` of 301 characters **fails**
 - [ ] `validateSourcePages` returns the offending item id when an item cites page 40 of a 12-page request
-- [ ] `grep -rn "z.object" src/ | grep -v "src/lib/schema.ts"` returns nothing
-- [ ] `src/types/digest.ts` contains no `z.` calls — only inferred types
+- [ ] `grep -rn "z.object" src/ | grep -vE "src/lib/schema.ts|src/lib/env.ts"` returns nothing — `env.ts` legitimately owns the environment schema, which is not a data shape
+- [ ] `src/types/digest.ts` declares no runtime schema — `z` appears only in type position (`z.infer<...>`), never as a `z.object(...)` call
 
 ---
 

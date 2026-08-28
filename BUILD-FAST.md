@@ -181,7 +181,7 @@ Import limits from constants.ts; do not restate their values. Run npm run typech
 - [ ] An item with `classification: "procedural"` and a non-null `impactNote` **fails** to parse
 - [ ] A 301-character `sourceQuote` **fails** to parse
 - [ ] `validateSourcePages` returns the offending id for an item citing page 40 of a 12-page request
-- [ ] `grep -rn "z.object" src/ | grep -v schema.ts` returns nothing
+- [ ] `grep -rn "z.object" src/ | grep -vE "schema.ts|env.ts"` returns nothing — `env.ts` legitimately owns the environment schema, which is not a data shape
 
 ---
 
